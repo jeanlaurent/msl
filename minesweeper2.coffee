@@ -1,5 +1,5 @@
 should = require('chai').should()
-require("./minesweeper2")
+require("./minesweeper")
 
 describe 'MineSweeper', ->
 	it 'should works', ->
