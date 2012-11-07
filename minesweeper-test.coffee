@@ -1,63 +1,70 @@
 should = require('chai').should()
-require("./minesweeper")
 
-describe 'MineSweeper', ->
-	it 'should works', ->
-		polka = 2
-		polka.should.equal 2
+describe 'MineSweeper Rules', ->
 
-	it 'should read the width & height correclty', ->
-		minesweeper = new MineSweeper()
+	it 'height and width should be zero at first', ->
+		minesweeper = new MineSweeper
 		minesweeper.height.should.equal 0
 		minesweeper.width.should.equal 0
 
-	it 'should read the map size correctly', ->
+	it 'should read correcly the map', ->
 		minesweeper = new MineSweeper """
-		2 2
-		*.
-		..
+		3 2
+		*..
+		...
 		"""
 		minesweeper.height.should.equal 2
-		minesweeper.width.should.equal 2
+		minesweeper.width.should.equal 3
 
 	it 'should find a bomb when there is one', ->
 		minesweeper = new MineSweeper """
-		2 2
-		.*
-		..
+		3 2
+		.*.
+		...
 		"""
-		minesweeper.isBomb(1,0).should.equal true
+		minesweeper.isBombAt(1,0).should.equal true
 
-
-	it 'should not find a bomb when there is no one', ->
+	it 'shoud not go kaboomm when checking for wrong coordinates', ->
 		minesweeper = new MineSweeper """
-		2 2
-		.*
-		..
+		3 2
+		.*.
+		...
 		"""
-		minesweeper.isBomb(0,1).should.equal false
-	
+		minesweeper.isBombAt(-1,-1).should.equal false
 
-	it 'should not find a bomb with invalid parameters', ->
+	it 'should find all adjacent coordinates', ->
 		minesweeper = new MineSweeper """
-		2 2
-		.*
-		..
+		3 2
+		.*.
+		...
 		"""
-		minesweeper.isBomb(-1,1).should.equal false
+		minesweeper.adjacentBombsOf(1,1).should.equal 1
 
-	it 'should one bomd around a point', ->
+	it 'should resolve a simple minefield', ->
 		minesweeper = new MineSweeper """
-		2 2
-		.*
-		..
+		3 2
+		.*.
+		...
 		"""
-		minesweeper.numberOfAdjacentBombs(0,1).should.equal 1
+		minesweeper.resolve().should.equal """
+		1*1
+		111
+		"""
 
-	it 'should find no bomb in 1,1', ->
+	it 'should solve a bigger minefield', ->
 		minesweeper = new MineSweeper """
-		2 2
-		.*
-		..
+		5 5
+		*....
+		.....
+		.....
+		.....
+		..***
 		"""
-		minesweeper.numberOfAdjacentBombs(1,0).should.equal 0
+		minesweeper.resolve().should.equal """
+		*1000
+		11000
+		00000
+		01232
+		01***
+		"""
+

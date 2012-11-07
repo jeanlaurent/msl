@@ -1,30 +1,41 @@
-
 class MineSweeper
-	constructor: (grid) ->
-		unless grid?
+	constructor: (minefield) ->
+		unless minefield?
 			@height=0
 			@width=0
 		else
-			lines = grid.split '\n'
-			firstline = lines[0].split(' ')
-			@width = parseInt firstline[0], 10
-			@height = parseInt firstline[1], 10
-			@lines = lines[1..]
+			lines = minefield.split '\n'
+			firstLine = lines[0].split ' '
+			@width = +firstLine[0]
+			@height = +firstLine[1]
+			@minefield = lines[1..]
 
-	isBomb: (x, y) ->
-		if (@height > y >= 0) && (@width > x >= 0)
-			@lines[y][x] == '*'
+	isBombAt: (x,y) ->
+		if (@width > x >= 0) && (@height > y >= 0)
+			@minefield[y][x] == '*'
 		else 
 			false
 
-	numberOfAdjacentBombs: (x,y) ->
+	adjacentBombsOf: (x,y) ->
 		numberOfBombs = 0
 		for xx in [x-1..x+1]
 			for yy in [y-1..y+1]
-				numberOfBombs++ if @isBomb(xx,yy)
+				numberOfBombs++ if @isBombAt xx,yy
 		numberOfBombs
 
+	representationOf: (x,y) ->
+		if @isBombAt x,y
+			'*'
+		else
+			@adjacentBombsOf x,y
 
+	resolve: () ->
+		solution=""
+		for y in [0...@height]
+			unless y ==0
+				solution += "\n"
+			for x in [0...@width]
+				solution += "#{@representationOf x,y}"
+		solution
 
-
-root.MineSweeper = MineSweeper
+root.MineSweeper=MineSweeper
